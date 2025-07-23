@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebKnowledge</title>
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WebKnowledge</h1>
+        </header>
+        
+        <main>
+            <div class="action-buttons">
+                <button id="summarizeBtn" class="primary-button small-btn summarize-btn">
+                    <span class="icon">✨</span>
+                    <span>网页总结</span>
+                </button>
+                <button id="saveMdBtn" class="primary-button small-btn markdown-btn">
+                    <span class="icon">📄</span>
+                    <span>保存为Markdown</span>
+                </button>
+                <button id="savePdfBtn" class="primary-button small-btn pdf-btn">
+                    <span class="icon">📑</span>
+                    <span>保存为PDF</span>
+                </button>
+            </div>
+            
+            <div id="status" class="status-message hidden">
+                <span id="statusText">处理中...</span>
+                <div class="spinner"></div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="settings-grid">
+                <label class="setting-item">
+                    <input type="checkbox" id="autoDownload"/>
+                    <span>自动下载</span>
+                </label>
+                <label class="setting-item">
+                    <input type="checkbox" id="imageEncode" checked>
+                    <span>图片编码</span>
+                </label>
+                <label class="setting-item">
+                    <input type="checkbox" id="deduplicate" checked>
+                    <span>文档去重</span>
+                </label>
+            </div>
+            <div class="setting-item path-setting">
+                <label for="downloadPath">下载到子目录:
+                    <div class="tooltip">
+                        <span class="tooltip-icon">?</span>
+                        <span class="tooltip-text">路径是相对于浏览器默认下载目录的子目录。例如，输入 "VikingNotes/" 将会保存到 "下载/VikingNotes/"。</span>
+                    </div>
+                </label>
+                <input type="text" id="downloadPath" placeholder="例如：MyNotes/">
+            </div>
+            <div class="settings-actions">
+                <button id="openFolderBtn" class="secondary-button small-btn">
+                    <span class="icon">📁</span>
+                    <span>下载目录</span>
+                </button>
+                <button id="settingsBtn" class="secondary-button small-btn">
+                    <span class="icon">⚙️</span>
+                    <span>设置</span>
+                </button>
+            </div>
+
+            <!-- Settings Container -->
+            <div id="settingsContainer" class="settings-container" style="display: none;">
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="apiKeyInput">API Key:</label>
+                        <input type="text" id="apiKeyInput" placeholder="请输入您的API Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="modelSelect">选择模型:</label>
+                        <select id="modelSelect">
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="doubao-seed-1-6">Doubao-Seed-1.6</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultSaveFormat">默认保存格式:</label>
+                        <select id="defaultSaveFormat">
+                            <option value="markdown">Markdown</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customPromptInput">自定义总结Prompt:</label>
+                        <textarea id="customPromptInput" rows="6" placeholder="请输入自定义的总结Prompt。您可以使用 {{pageUrl}} 作为文章链接的占位符。"></textarea>
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="akInput">AK:</label>
+                        <input type="text" id="akInput" placeholder="请输入您的Access Key">
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="skInput">SK:</label>
+                        <input type="password" id="skInput" placeholder="请输入您的Secret Key">
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="domainInput">域名:</label>
+                        <input type="text" id="domainInput" placeholder="请输入域名">
+                    </div>
+                    <div class="form-group" style="display: none;">
+                        <label for="knowledgeBaseInput">知识库名称:</label>
+                        <input type="text" id="knowledgeBaseInput" placeholder="请输入知识库名称">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="saveSettingsBtn" class="primary-button">保存设置</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="summaryContainer" class="summary-container hidden"></div>
+
+            <div class="info">
+                <p><a href="https://www.volcengine.com/docs/84313/1254442" target="_blank">构建知识库 👉</a></p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="../js/popup.js"></script>
+</body>
+</html>

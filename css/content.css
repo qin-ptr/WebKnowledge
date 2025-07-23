@@ -1,0 +1,132 @@
+/* Add transition to body for smooth push effect */
+body {
+    transition: margin-right 0.3s ease-in-out;
+}
+
+/* This class will be added to the body to push the content */
+body.summary-sidebar-open {
+    margin-right: 350px;
+}
+
+
+/* 侧边栏容器 */
+#summary-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    transform: translateX(100%); /* Start off-screen to the right */
+    width: 350px;
+    height: 100%;
+    background-color: #f9f9f9;
+    border-left: 1px solid #ddd;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    z-index: 9999;
+    transition: transform 0.3s ease-in-out; /* Animate the transform property */
+    display: flex;
+    flex-direction: column;
+}
+
+#summary-sidebar.visible {
+    transform: translateX(0); /* Slide into view */
+}
+
+/* 侧边栏头部 */
+#summary-sidebar-header {
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#summary-sidebar-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+#close-sidebar-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #888;
+}
+
+#close-sidebar-btn:hover {
+    color: #333;
+}
+
+/* 侧边栏内容 */
+#summary-sidebar-content {
+    padding: 15px 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: left; /* Ensure text is left-aligned */
+}
+
+#summary-sidebar-content p {
+    margin-bottom: 1em;
+}
+
+#summary-sidebar-content strong {
+    font-weight: bold;
+}
+
+/* Styling for markdown-generated content */
+#summary-sidebar-content h1,
+#summary-sidebar-content h2,
+#summary-sidebar-content h3,
+#summary-sidebar-content h4,
+#summary-sidebar-content h5,
+#summary-sidebar-content h6 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+}
+
+#summary-sidebar-content ul,
+#summary-sidebar-content ol {
+    margin-top: 0;
+    margin-bottom: 1em;
+    padding-left: 20px; /* Indent lists */
+}
+
+#summary-sidebar-content li {
+    margin-bottom: 0.4em;
+}
+
+#summary-sidebar-content blockquote {
+    margin: 1em 0;
+    padding: 0.5em 15px;
+    border-left: 4px solid #ddd;
+    background-color: #f0f0f0;
+    color: #555;
+}
+
+#summary-sidebar-content code {
+    background-color: #eee;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+#summary-sidebar-content pre {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+#summary-sidebar-content pre code {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+}

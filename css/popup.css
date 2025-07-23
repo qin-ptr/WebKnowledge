@@ -1,0 +1,396 @@
+/* 
+ * WebKnowledge - 弹出界面样式
+ * 
+ * 这个样式表为Chrome扩展的弹出界面提供了现代、简洁的视觉风格。
+ * 设计目标是创建一个直观、易用且视觉吸引力强的界面，同时保持适合
+ * 浏览器扩展弹出窗口的紧凑尺寸。
+ */
+
+/* 基础样式 - 重置默认样式并设置基本属性 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* 确保所有元素的尺寸包含内边距和边框 */
+}
+
+body {
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; /* 使用无衬线字体提高可读性，包括中文字体支持 */
+  background-color: #f9f9f9; /* 浅灰色背景提供柔和的视觉体验 */
+  color: #333; /* 深灰色文本提供良好的对比度 */
+  font-size: 14px; /* 适合弹出窗口的字体大小 */
+  line-height: 1.5; /* 增加行高提高可读性 */
+}
+
+/* 主容器 - 定义弹出窗口的整体尺寸和外观 */
+.container {
+  width: 300px; /* 为弹出窗口设置适当的宽度，不太大也不太小 */
+  padding: 16px; /* 提供足够的内边距使内容不会太拥挤 */
+  background-color: #ffffff; /* 白色背景使界面看起来干净整洁 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 轻微的阴影增加深度感 */
+}
+
+/* 头部样式 - 设置标题区域的外观 */
+header {
+  margin-bottom: 16px; /* 在头部和主要内容之间提供足够的间距 */
+  text-align: center; /* 居中对齐使标题更加突出 */
+}
+
+h1 {
+  font-size: 18px; /* 适合弹出窗口的标题大小 */
+  color: #2c3e50; /* 深蓝灰色提供专业感 */
+  margin-bottom: 4px; /* 在标题和副标题之间提供适当的间距 */
+}
+
+.subtitle {
+  font-size: 12px; /* 较小的字体大小用于副标题 */
+  color: #7f8c8d; /* 浅灰色使副标题不会与主标题竞争注意力 */
+}
+
+/* 主要内容区域 - 包含操作按钮和状态信息 */
+main {
+  margin-bottom: 16px; /* 在主要内容和底部之间提供足够的间距 */
+}
+
+/* 操作按钮区域 - 布局和对齐 */
+.action-buttons {
+  display: flex;
+  flex-direction: column; /* 垂直排列按钮 */
+  align-items: center; /* 水平居中对齐 */
+  gap: 10px; /* 在按钮之间添加间距 */
+  margin-bottom: 16px; /* 在按钮和状态信息之间提供间距 */
+}
+
+/* 主要按钮样式 - "转换并下载"按钮的视觉设计 */
+.primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3498db; /* 明亮的蓝色使按钮成为视觉焦点 */
+  color: white; /* 白色文本在蓝色背景上提供良好的对比度 */
+  border: none; /* 移除默认边框 */
+  border-radius: 4px; /* 圆角边框使按钮看起来更现代 */
+  padding: 10px 20px; /* 足够的内边距使按钮易于点击 */
+  font-size: 14px; /* 适合按钮的字体大小 */
+  cursor: pointer; /* 鼠标悬停时显示指针 */
+  transition: background-color 0.2s; /* 平滑的颜色过渡效果 */
+}
+
+/* 按钮悬停状态 - 提供视觉反馈 */
+.primary-button:hover {
+  background-color: #2980b9; /* 稍深的蓝色表示可交互 */
+}
+
+/* 按钮激活状态 - 点击时的视觉反馈 */
+.primary-button:active {
+  background-color: #1f6aa5; /* 更深的蓝色表示点击状态 */
+}
+
+/* 特定按钮颜色 */
+.markdown-btn {
+  background-color: #3498db; /* 蓝色 */
+}
+
+.markdown-btn:hover {
+  background-color: #2980b9;
+}
+
+.pdf-btn {
+  background-color: #e74c3c; /* 红色 */
+}
+
+.pdf-btn:hover {
+  background-color: #c0392b;
+}
+
+/* 次要按钮样式 - "打开下载目录"按钮的视觉设计 */
+.secondary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ecf0f1; /* 浅灰色背景 */
+  color: #2c3e50; /* 深蓝灰色文本 */
+  border: 1px solid #bdc3c7; /* 灰色边框 */
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.secondary-button:hover {
+  background-color: #dce4e8; /* 悬停时稍深的灰色 */
+  border-color: #95a5a6;
+}
+
+.secondary-button:active {
+  background-color: #c8d0d4; /* 点击时更深的灰色 */
+}
+
+/* 图标样式 - 按钮内的图标 */
+.icon {
+  margin-right: 8px; /* 在图标和文本之间提供间距 */
+}
+
+/* 状态信息区域 - 显示处理状态、成功或错误信息 */
+.status-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f8ff; /* 浅蓝色背景表示信息状态 */
+  border: 1px solid #c8e1ff; /* 蓝色边框增强视觉效果 */
+  border-radius: 4px; /* 圆角边框与按钮风格一致 */
+  padding: 8px; /* 适当的内边距使内容不会太拥挤 */
+  margin-top: 12px; /* 在按钮和状态信息之间提供间距 */
+}
+
+/* 隐藏元素 - 用于动态显示/隐藏状态信息 */
+.hidden {
+  display: none; /* 完全隐藏元素 */
+}
+
+/* 成功状态样式 - 用于显示操作成功的反馈 */
+.success {
+  background-color: #e6ffed; /* 浅绿色背景表示成功 */
+  border-color: #b4e6c8; /* 绿色边框增强成功状态的视觉效果 */
+}
+
+/* 错误状态样式 - 用于显示操作失败的反馈 */
+.error {
+  background-color: #ffeef0; /* 浅红色背景表示错误 */
+  border-color: #f9c0c5; /* 红色边框增强错误状态的视觉效果 */
+}
+
+/* 加载动画 - 用于表示处理中状态 */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.1); /* 浅灰色边框作为背景 */
+  border-top-color: #3498db; /* 蓝色边框作为动画元素 */
+  border-radius: 50%; /* 圆形边框创建旋转效果 */
+  margin-left: 8px; /* 在文本和动画之间提供间距 */
+  animation: spin 1s linear infinite; /* 持续旋转动画 */
+}
+
+/* 旋转动画关键帧 - 定义spinner的旋转效果 */
+@keyframes spin {
+  to {
+    transform: rotate(360deg); /* 完整旋转一周 */
+  }
+}
+
+/* 底部区域样式 - 包含设置选项和提示信息 */
+footer {
+  border-top: 1px solid #eee; /* 浅灰色边框分隔底部区域 */
+  padding-top: 12px; /* 在边框和内容之间提供间距 */
+}
+
+/* 设置选项区域 - 用户可配置的转换选项 */
+.settings {
+  display: flex;
+  flex-wrap: wrap; /* 允许在空间不足时换行 */
+  margin-bottom: 12px; /* 在设置和提示信息之间提供间距 */
+}
+
+/* 新增：设置项网格布局 */
+.settings-grid {
+  display: flex;
+  justify-content: space-around; /* 改为flex布局以避免换行 */
+  margin-bottom: 12px;
+}
+
+/* 单个设置项样式 - 复选框和标签的布局 */
+.setting-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer; /* 鼠标悬停时显示指针，增强可点击感 */
+  white-space: nowrap; /* 防止标签换行 */
+}
+
+.path-setting {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.path-setting label {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+.path-setting input {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 4px 6px;
+}
+
+/* 复选框样式 - 确保与标签有适当间距 */
+.setting-item input {
+  margin-right: 6px; /* 在复选框和文本之间提供间距 */
+}
+
+/* 提示信息样式 - 底部的辅助文本 */
+.info {
+  font-size: 11px; /* 较小的字体大小用于辅助信息 */
+  color: #95a5a6; /* 浅灰色使提示信息不会分散注意力 */
+  text-align: center; /* 居中对齐提示文本 */
+  margin-top: 12px; /* 与上方元素的间距 */
+}
+
+/* 设置按钮组 */
+.settings-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+/* 设置容器 */
+.settings-container {
+    background-color: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.settings-container h2 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.summarize-btn {
+    background-color: #8e44ad; /* 紫色背景 */
+}
+
+.summarize-btn:hover {
+    background-color: #9b59b6;
+}
+
+.markdown-btn {
+    background-color: #2980b9; /* 蓝色背景 */
+}
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 12px; /* 减小字体 */
+    color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px; /* 减小字体 */
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+/* Tooltip 容器 */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+/* Tooltip 图标 */
+.tooltip .tooltip-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #bdc3c7;
+  color: white;
+  text-align: center;
+  font-size: 10px;
+  line-height: 14px;
+  cursor: pointer;
+}
+
+/* Tooltip 文本 */
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position the tooltip above the icon */
+  left: 50%;
+  margin-left: -110px; /* Use half of the width to center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Tooltip arrow */
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Show the tooltip text when hovering over the tooltip container */
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Animation for closing the popup */
+@keyframes slideUpAndFadeOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
+.closing {
+  animation: slideUpAndFadeOut 0.3s ease-out forwards;
+}
+
+#customPromptInput {
+  width: calc(100% - 20px);
+  height: 80px;
+  margin-top: 5px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: sans-serif;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.settings-section h2 {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  white-space: nowrap;
+}
