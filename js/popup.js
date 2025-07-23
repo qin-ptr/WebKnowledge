@@ -283,10 +283,10 @@ document.addEventListener('DOMContentLoaded', () => {
   function loadSettings() {
     chrome.storage.local.get(
       { 
-        imageEncode: true, 
+        imageEncode: false, 
         autoDownload: false, 
-        downloadPath: '/VikingDownload/', 
-        deduplicate: true,
+        downloadPath: '/WebKnowledge/',
+        deduplicate: false,
         defaultSaveFormat: 'markdown',
         ak: '',
         sk: '',
