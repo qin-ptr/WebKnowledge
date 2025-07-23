@@ -184,6 +184,19 @@ footer {
   padding-top: 12px; /* 在边框和内容之间提供间距 */
 }
 
+.github-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+}
+
+.github-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
 /* 设置选项区域 - 用户可配置的转换选项 */
 .settings {
   display: flex;
@@ -234,10 +247,12 @@ footer {
 
 /* 提示信息样式 - 底部的辅助文本 */
 .info {
-  font-size: 11px; /* 较小的字体大小用于辅助信息 */
-  color: #95a5a6; /* 浅灰色使提示信息不会分散注意力 */
-  text-align: center; /* 居中对齐提示文本 */
-  margin-top: 12px; /* 与上方元素的间距 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: #95a5a6;
+  margin-top: 12px;
 }
 
 /* 设置按钮组 */
