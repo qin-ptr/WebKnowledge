@@ -2,7 +2,7 @@
  * popup.js - WebKnowledge的弹出界面逻辑
  * 
  * 这个文件实现了Chrome扩展弹出界面的交互逻辑，包括：
- * 1. 处理用户点击"转换并下载"按钮的事件
+ * 1. 处理用户点击\"转换并下载\"按钮的事件
  * 2. 与content script通信，获取页面内容
  * 3. 与background script通信，触发下载功能
  * 4. 显示转换和下载状态
@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const apiKeyInput = document.getElementById('apiKeyInput');
   const modelSelect = document.getElementById('modelSelect');
   const customPromptInput = document.getElementById('customPromptInput');
+  const disabledSitesTextarea = document.getElementById('disabledSitesTextarea');
 
   // 为转换按钮添加点击事件监听器
   saveMdBtn.addEventListener('click', handleSaveAsMarkdownClick);
@@ -59,22 +60,57 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   /**
+   * 检查当前URL是否在禁用网站列表中
+   * @param {string} url - 当前页面的URL
+   * @returns {Promise<boolean>} - 如果URL被禁用，返回true；否则返回false。
+   */
+  async function isUrlDisabled(url) {
+    try {
+      const items = await new Promise(resolve => {
+        chrome.storage.local.get({ disabledSites: '' }, items => resolve(items));
+      });
+      const disabledSites = items.disabledSites
+        .split('\n')
+        .map(s => s.trim().toLowerCase())
+        .filter(s => s.length > 0);
+
+      if (disabledSites.length === 0) {
+        return false;
+      }
+
+      const urlHostname = new URL(url).hostname.toLowerCase();
+
+      return disabledSites.some(disabledSite => {
+        return urlHostname === disabledSite || urlHostname.endsWith('.' + disabledSite);
+      });
+    } catch (e) {
+      console.error("isUrlDisabled函数出错:", e);
+      return false; // 出错时安全起见，不禁用
+    }
+  }
+
+  /**
    * 处理转换按钮点击事件
    */
   async function handleSaveAsMarkdownClick() {
     try {
-      // 显示处理中状态
-      showStatus('处理中...', 'loading');
-      
-      // 禁用按钮，防止重复点击
-      saveMdBtn.disabled = true;
-      
       // 获取当前标签页
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       
       if (!tab) {
         throw new Error('无法获取当前标签页');
       }
+
+      if (await isUrlDisabled(tab.url)) {
+        showStatus('当前网站已被禁用', 'error');
+        return;
+      }
+      
+      // 显示处理中状态
+      showStatus('处理中...', 'loading');
+      
+      // 禁用按钮，防止重复点击
+      saveMdBtn.disabled = true;
       
       // 获取用户设置
       const options = {
@@ -128,18 +164,22 @@ document.addEventListener('DOMContentLoaded', () => {
    */
   async function handleSaveAsPdfClick() {
     try {
-      // 显示处理中状态
-      showStatus('正在生成PDF...', 'loading');
-      
-      // 禁用按钮，防止重复点击
-      savePdfBtn.disabled = true;
-      
-      // 获取当前标签页
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       
       if (!tab) {
         throw new Error('无法获取当前标签页');
       }
+
+      if (await isUrlDisabled(tab.url)) {
+        showStatus('当前网站已被禁用', 'error');
+        return;
+      }
+
+      // 显示处理中状态
+      showStatus('正在生成PDF...', 'loading');
+      
+      // 禁用按钮，防止重复点击
+      savePdfBtn.disabled = true;
       
       const path = downloadPath.value;
 
@@ -174,22 +214,29 @@ document.addEventListener('DOMContentLoaded', () => {
    * 处理总结按钮点击事件
    */
   async function handleSummarizeClick() {
-    const apiKey = apiKeyInput.value;
-    const model = modelSelect.value;
-
-    if (!apiKey) {
-      alert('请先在设置中配置您的API Key。');
-      settingsContainer.style.display = 'block';
-      apiKeyInput.focus();
-      return;
-    }
-
     try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab) {
+        throw new Error('无法获取当前标签页');
+      }
+
+      if (await isUrlDisabled(tab.url)) {
+        showStatus('当前网站已被禁用', 'error');
+        return;
+      }
+
+      const apiKey = apiKeyInput.value;
+      const model = modelSelect.value;
+
+      if (!apiKey) {
+        alert('请先在设置中配置您的API Key。');
+        settingsContainer.style.display = 'block';
+        apiKeyInput.focus();
+        return;
+      }
+
       showStatus('正在请求总结...', 'loading');
       summarizeBtn.disabled = true;
-
-      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab) throw new Error('无法获取当前标签页');
 
       // 1. Tell background script to start summarizing
       chrome.runtime.sendMessage({
@@ -230,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hideStatus();
       saveMdBtn.disabled = false;
       savePdfBtn.disabled = false;
+      summarizeBtn.disabled = false; // Also re-enable summarize button on error
       return;
     }
 
@@ -273,7 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
       kbName: knowledgeBaseInput.value,
       apiKey: apiKeyInput.value,
       model: modelSelect.value,
-      customPrompt: customPromptInput.value
+      customPrompt: customPromptInput.value,
+      disabledSites: disabledSitesTextarea.value
     });
   }
   
@@ -294,7 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
         kbName: '',
         apiKey: '',
         model: 'deepseek',
-        customPrompt: ''
+        customPrompt: '',
+        disabledSites: ''
       },
       (items) => {
         imageEncode.checked = items.imageEncode;
@@ -309,6 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         apiKeyInput.value = items.apiKey;
         modelSelect.value = items.model;
         customPromptInput.value = items.customPrompt;
+        disabledSitesTextarea.value = items.disabledSites;
       }
     );
   }
@@ -319,6 +370,14 @@ document.addEventListener('DOMContentLoaded', () => {
   downloadPath.addEventListener('input', saveSettings);
   deduplicate.addEventListener('change', saveSettings);
   customPromptInput.addEventListener('input', saveSettings);
+  disabledSitesTextarea.addEventListener('input', saveSettings);
+
+  // 监听来自后台脚本的消息
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'showError') {
+      showStatus(message.message, 'error');
+    }
+  });
   
   // 加载保存的设置
   loadSettings();

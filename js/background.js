@@ -19,6 +19,35 @@ const URL_PATTERNS = [
 // 存储最近一次下载的ID
 let lastDownloadId = null;
 
+/**
+ * 检查当前URL是否在禁用网站列表中
+ * @param {string} url - 当前页面的URL
+ * @returns {Promise<boolean>} - 如果URL被禁用，返回true；否则返回false。
+ */
+async function isUrlDisabled(url) {
+  try {
+    const items = await chrome.storage.local.get({ disabledSites: '' });
+    const disabledSites = items.disabledSites
+      .split('\n')
+      .map(s => s.trim().toLowerCase()) // 转换为小写以进行不区分大小写的比较
+      .filter(s => s.length > 0);
+
+    if (disabledSites.length === 0) {
+      return false;
+    }
+
+    const urlHostname = new URL(url).hostname.toLowerCase(); // 同样转换为小写
+
+    return disabledSites.some(disabledSite => {
+      // 完全匹配或子域名匹配
+      return urlHostname === disabledSite || urlHostname.endsWith('.' + disabledSite);
+    });
+  } catch (e) {
+    console.error("isUrlDisabled函数出错:", e);
+    return false; // 安全起见，返回false
+  }
+}
+
 // 初始化扩展
 chrome.runtime.onInstalled.addListener(() => {
   console.log("WebKnowledge已安装");
@@ -67,6 +96,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
 
         const { action, data } = message;
+
+        // 在执行任何操作前检查URL是否被禁用
+        if (tab && tab.url && await isUrlDisabled(tab.url)) {
+            const errorMessage = '此网站已被禁用，无法执行保存或AI总结操作。';
+            if (action === 'initiateSummary' || action === 'convertAndDownload' || action === 'saveAsPdf') {
+                // 对于需要用户反馈的操作，发送错误消息到popup
+                chrome.tabs.sendMessage(tab.id, { action: 'showError', message: errorMessage });
+            }
+            console.warn(`尝试在禁用网站上执行操作: ${tab.url}`);
+            return; // 阻止后续操作
+        }
 
         switch (action) {
             case "convertAndDownload":
@@ -256,6 +296,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     // 检查是否启用了自动下载
     chrome.storage.local.get({ autoDownload: false, downloadPath: 'Markdown/', imageEncode: true }, async (items) => {
       if (items.autoDownload) {
+        // 在自动下载前检查URL是否被禁用
+        if (await isUrlDisabled(tab.url)) {
+          console.log(`自动下载已跳过，因为 ${tab.url} 在禁用列表中。`);
+          return; // 如果被禁用，则不执行任何操作
+        }
+
         const downloadSubPath = normalizePath(items.downloadPath);
         // 如果是PDF文件，则直接下载
         if (tab.url.toLowerCase().endsWith('.pdf')) {
