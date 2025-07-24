@@ -41,7 +41,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["utils/markdown.js", "utils/marked.min.js"],
+      "resources": ["utils/markdown.js"],
       "matches": ["<all_urls>"]
     }
   ]
