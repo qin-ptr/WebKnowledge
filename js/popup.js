@@ -111,6 +111,18 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // 禁用按钮，防止重复点击
       saveMdBtn.disabled = true;
+
+      // 注入内容脚本，确保接收端存在
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['js/marked.min.js', 'utils/markdown.js', 'js/content.js']
+        });
+      } catch (e) {
+        // 如果注入失败（例如在特殊页面上），则捕获错误
+        console.error("内容脚本注入失败:", e);
+        throw new Error("无法在此页面上执行操作。请尝试刷新页面或在不同的页面上使用。");
+      }
       
       // 获取用户设置
       const options = {

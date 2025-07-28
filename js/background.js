@@ -19,6 +19,38 @@ const URL_PATTERNS = [
 // 存储最近一次下载的ID
 let lastDownloadId = null;
 
+// Offscreen document management
+let creating; // A promise that resolves when the offscreen document is created
+
+async function hasOffscreenDocument() {
+  const path = 'html/offscreen.html';
+  const offscreenUrl = chrome.runtime.getURL(path);
+  const contexts = await chrome.runtime.getContexts({
+    contextTypes: ['OFFSCREEN_DOCUMENT'],
+    documentUrls: [offscreenUrl]
+  });
+  return contexts.length > 0;
+}
+
+async function createOffscreenDocument() {
+    const path = 'html/offscreen.html';
+    if (await hasOffscreenDocument()) {
+        return;
+    }
+
+    if (creating) {
+        await creating;
+    } else {
+        creating = chrome.offscreen.createDocument({
+            url: path,
+            reasons: ['BLOBS'],
+            justification: 'Blob URLs are not available in service workers, so we need an offscreen document to create them.',
+        });
+        await creating;
+        creating = null;
+    }
+}
+
 /**
  * 检查当前URL是否在禁用网站列表中
  * @param {string} url - 当前页面的URL
@@ -160,19 +192,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  */
 async function handleConvertAndDownload(data, tab) {
   try {
+    await createOffscreenDocument();
     const downloadPath = normalizePath(data.downloadPath);
     const fileName = downloadPath + sanitizeFileName(data.title) + ".md";
     
-    // 将Markdown内容转换为Data URL
     const markdownContent = data.markdown;
-    const dataUrl = "data:text/markdown;charset=utf-8," + encodeURIComponent(markdownContent);
+
+    chrome.runtime.sendMessage({
+      type: 'create-blob-url',
+      target: 'offscreen',
+      data: markdownContent
+    });
+
+    const blobUrl = await new Promise((resolve) => {
+      const listener = (message) => {
+        if (message.type === 'blob-url-created') {
+          chrome.runtime.onMessage.removeListener(listener);
+          resolve(message.url);
+        }
+      };
+      chrome.runtime.onMessage.addListener(listener);
+    });
     
     // 下载文件
     const downloadId = await chrome.downloads.download({
-      url: dataUrl, 
+      url: blobUrl, 
       filename: fileName, 
       saveAs: data.saveAs || false,
       conflictAction: 'overwrite'
+    });
+
+    chrome.runtime.sendMessage({
+        type: 'revoke-blob-url',
+        target: 'offscreen',
+        url: blobUrl
     });
 
     if (downloadId) {

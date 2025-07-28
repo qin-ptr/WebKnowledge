@@ -5,11 +5,11 @@
   "manifest_version": 3,
   "permissions": [
     "activeTab",
+    "storage",
     "scripting",
     "downloads",
-    "tabs",
-    "storage",
-    "debugger"
+    "debugger",
+    "offscreen"
   ],
   "host_permissions": [
     "<all_urls>"
