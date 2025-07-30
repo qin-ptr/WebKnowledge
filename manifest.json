@@ -1,6 +1,6 @@
 {
   "name": "WebKnowledge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "免费浏览器插件，支持网页下载到 markdown 和 pdf 格式文件。支持 AI 网页总结、AI 对话记录保存。",
   "manifest_version": 3,
   "permissions": [
